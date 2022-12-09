@@ -6,18 +6,53 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
+#include <getopt.h>
+#include <iostream>
 
 #include "common.hh"
 
 static int have_response = 0;
 
+
+//  ./client -i 172.20.102.255  # 广播地址
+//  ./client # localhost
 int
-main(void) {
+main(int argc, char** argv) {
   coap_context_t  *ctx = nullptr;
   coap_session_t *session = nullptr;
   coap_address_t dst;
   coap_pdu_t *pdu = nullptr;
   int result = EXIT_FAILURE;;
+
+
+
+  char *optstr = (char*)"i:";
+  struct option opts[] = {
+      {"ip", required_argument, NULL, 'i'},
+      {0, 0, 0, 0},
+  };
+
+  int opt;
+  std::string address;
+    while((opt = getopt_long(argc, argv, optstr, opts, NULL)) != -1){
+        switch(opt) {
+            case 'n':
+                address = std::string(optarg);
+                printf("optarg : %s , address : %s \n", optarg, address.c_str());
+                break;    
+            case '?':
+                if(strchr(optstr, optopt) == NULL){
+                    fprintf(stderr, "unknown option '-%c'\n", optopt);
+                }else{
+                    fprintf(stderr, "option requires an argument '-%c'\n", optopt);
+                }
+                return 1;
+        }
+    }
+
+  if(address.empty()) {
+    address = "localhost";
+  }
 
   coap_startup();
 
