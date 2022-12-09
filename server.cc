@@ -6,14 +6,44 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
-
+#include <getopt.h>
+#include <iostream>
 #include "common.hh"
 
 int
-main(void) {
+main(int argc, char** argv) {
   coap_set_log_level(LOG_DEBUG);
   coap_log(LOG_INFO, "CoAP Server run...\n");
 
+
+
+  char *optstr = (char*)"i:";
+  struct option opts[] = {
+      {"ip", required_argument, NULL, 'i'},
+      {0, 0, 0, 0},
+  };
+
+  int opt;
+  std::string address;
+    while((opt = getopt_long(argc, argv, optstr, opts, NULL)) != -1){
+        switch(opt) {
+            case 'i':
+                address = std::string(optarg);
+                printf("optarg : %s , address : %s \n", optarg, address.c_str());
+                break;    
+            case '?':
+                if(strchr(optstr, optopt) == NULL){
+                    fprintf(stderr, "unknown option '-%c'\n", optopt);
+                }else{
+                    fprintf(stderr, "option requires an argument '-%c'\n", optopt);
+                }
+                return 1;
+        }
+    }
+
+  if(address.empty()) {
+    address = "localhost";
+  }
 
   coap_context_t  *ctx = nullptr;
   coap_address_t dst;
@@ -24,7 +54,7 @@ main(void) {
   coap_startup();
 
   /* resolve destination address where server should be sent */
-  if (resolve_address("localhost", "5683", &dst) < 0) {
+  if (resolve_address(address.c_str(), "5683", &dst) < 0) {
     coap_log(LOG_CRIT, "failed to resolve address\n");
     goto finish;
   }

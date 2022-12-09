@@ -36,7 +36,7 @@ main(int argc, char** argv) {
   std::string address;
     while((opt = getopt_long(argc, argv, optstr, opts, NULL)) != -1){
         switch(opt) {
-            case 'n':
+            case 'i':
                 address = std::string(optarg);
                 printf("optarg : %s , address : %s \n", optarg, address.c_str());
                 break;    
@@ -60,7 +60,7 @@ main(int argc, char** argv) {
   coap_set_log_level(LOG_DEBUG);
 
   /* resolve destination address where server should be sent */
-  if (resolve_address("localhost", "5683", &dst) < 0) {
+  if (resolve_address(address.c_str(), "5683", &dst) < 0) {
     coap_log(LOG_CRIT, "failed to resolve address\n");
     goto finish;
   }
