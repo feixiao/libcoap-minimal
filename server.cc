@@ -11,6 +11,10 @@
 
 int
 main(void) {
+  coap_set_log_level(LOG_DEBUG);
+  coap_log(LOG_INFO, "CoAP Server run...\n");
+
+
   coap_context_t  *ctx = nullptr;
   coap_address_t dst;
   coap_resource_t *resource = nullptr;
@@ -39,6 +43,8 @@ main(void) {
                            const coap_pdu_t *request,
                            auto,
                            coap_pdu_t *response) {
+
+                          printf("handler COAP_REQUEST_GET\n");
                           coap_show_pdu(LOG_WARNING, request);
                           coap_pdu_set_code(response, COAP_RESPONSE_CODE_CONTENT);
                           coap_add_data(response, 5,

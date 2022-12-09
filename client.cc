@@ -22,7 +22,7 @@ main(void) {
   coap_startup();
 
   /* Set logging level */
-  coap_set_log_level(LOG_WARNING);
+  coap_set_log_level(LOG_DEBUG);
 
   /* resolve destination address where server should be sent */
   if (resolve_address("coap.me", "5683", &dst) < 0) {
